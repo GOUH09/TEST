@@ -1,90 +1,76 @@
+```cpp
 #include <LedControl.h>
 
 int DIN = 12;
-int CS =  11;
-int CLK  = 10;
-int switch4=9;
-int switch3=8;
-int switch2=7;
-int switch1=6;
-int val=0;
+int CS = 11;
+int CLK = 10;
 
-byte a[8]=     {0x00,0xE9,0x89,0xE9,0x29,0xEF,0x00,0x00,};
-byte  b[8]=     {0x00,0xE7,0x94,0xE7,0x91,0xE7,0x00,0x00,};
-byte c[8]=     {0x00,0xEC,0x8A,0x8C,0x8A,0xEA,0x00,0x00,};
-byte  d[8]=     {0x00,0xEE,0x49,0x4E,0x49,0xEE,0x00,0x00,};
-byte e[8]= {0x00,0xF0,0x80,0xF0,0x80,0xF0,0x00,0x00,};
+int bouton1 = 6;
+int bouton2 = 8;
 
+// creation de la matrice
+LedControl lc = LedControl(DIN, CLK, CS, 1);
 
-LedControl  lc=LedControl(DIN,CLK,CS,0);
+// le smiley
+byte smiley[8] = {
+  0x00,
+  0x00,
+  0x36,
+  0x36,
+  0x00,
+  0x41,
+  0x3E,
+  0x00
+};
 
-void setup(){
- lc.shutdown(0,false);       //The  MAX72XX is in power-saving mode on startup
- lc.setIntensity(0,15);      // Set  the brightness to maximum value
- lc.clearDisplay(0);         // and clear the  display
- pinMode(switch4, INPUT_PULLUP);
- pinMode(switch3, INPUT_PULLUP);
- pinMode(switch2, INPUT_PULLUP);
- pinMode(switch1, INPUT_PULLUP);
- 
+// la fleche vers le haut
+byte haut[8] = {
+  0x00,
+  0x18,
+  0x3C,
+  0x7E,
+  0x18,
+  0x18,
+  0x18,
+  0x18
+};
+
+void setup() {
+
+  // allume la matrice
+  lc.shutdown(0, false);
+
+  // luminosite
+  lc.setIntensity(0, 15);
+
+  // efface la matrice
+  lc.clearDisplay(0);
+
+  // reglage des boutons
+  pinMode(bouton1, INPUT_PULLUP);
+  pinMode(bouton2, INPUT_PULLUP);
 }
 
-void loop(){ 
- byte f[8]= {0x00,0x66,0xFF,0xFF,0x7E,0x3C,0x18,0x00,};
-    byte g[8]= {0xFF,0x99,0x00,0x00,0x81,0xC3,0xE7,0xFF,};
-    byte h[8]= {0x00,0x66,0xFF,0xFF,0x7E,0x3C,0x18,0x00,};
-    byte i[8]= {0xFF,0x99,0x00,0x00,0x81,0xC3,0xE7,0xFF,};
-    byte rien[8]= {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,};
-    
-    byte HAUT[8]= {0x00,0x18,0x3c,0x7e,0x18,0x18,0x18,0x18,};
-    byte BAS[8]= {0x18,0x18,0x18,0x18,0x7e,0x3c,0x18,0x00,};
-    byte Gauche[8]= {0x00,0x10,0x30,0x7f,0x7f,0x30,0x10,0x00,};
-    byte Droit[8]= {0x00,0x08,0x0c,0xfe,0xfe,0x0c,0x08,0x00,};
-    byte smiley[8]= {0x00,0x00,0x36,0x36,0x00,0x41,0x3e,0x00,};
-    byte bite[8]= {0x00,0x66,0x66,0x18,0x18,0x18,0x18,0x18,};
-    byte pint[8] = {0x08,0x14,0x22,0x04,0x08,0x08,0x00,0x08,};
-    byte fuck[8] = {0x10,0x10,0x10,0x7c,0x7c,0x38,0x00,0x00,};
+void loop() {
 
- if (digitalRead(switch1) == LOW) 
-    {
-    printByte(smiley);
-    }
+  // si on appuie sur le bouton 1
+  if (digitalRead(bouton1) == LOW) {
+    afficher(smiley);
+    delay(500);
+  }
 
-  if (digitalRead(switch2) == LOW) 
-    {
-    printByte(bite);
+  // si on appuie sur le bouton 2
+  if (digitalRead(bouton2) == LOW) {
+    afficher(haut);
     delay(500);
-    }
-  
-  if (digitalRead(switch3) == LOW) 
-    {
-    printByte(HAUT);
-    delay(500);
-    }
-  if (digitalRead(switch4) == LOW) 
-    {
-    printByte(fuck);
-    delay(500);
-    }
-
-  //lc.clearDisplay(0);         // and clear the  display
+  }
 }
 
-  void printByte(byte character [])
-    {
-    int i = 0;
-    for(i=0;i<8;i++)
-      {
-      lc.setRow(0,i,character[i]);
-      }
-    }
+// fonction pour afficher un dessin
+void afficher(byte dessin[]) {
 
-
-  //printByte(HAUT);
-  //delay(1000);
-  //printByte(Droit);
-  //delay(1000);
-  //printByte(BAS);
-  //delay(1000);
-  //printByte(Gauche);
-  //delay(1000);
+  for (int i = 0; i < 8; i++) {
+    lc.setRow(0, i, dessin[i]);
+  }
+}
+```
